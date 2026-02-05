@@ -6,13 +6,21 @@ const formData = {
 const form = document.querySelector('.feedback-form');
 const localStorageKey = 'feedback-form-state';
 
-if (localStorage.getItem(localStorageKey)) {
-  const parsedData = JSON.parse(localStorage.getItem(localStorageKey));
+const savedData = localStorage.getItem(localStorageKey);
 
-  formData.email = parsedData.email || '';
-  formData.message = parsedData.message || '';
-  form.elements.email.value = formData.email;
-  form.elements.message.value = formData.message;
+if (savedData) {
+  try {
+    const parsedData = JSON.parse(savedData);
+
+    formData.email = parsedData.email || '';
+    formData.message = parsedData.message || '';
+
+    form.elements.email.value = formData.email;
+    form.elements.message.value = formData.message;
+  } catch (error) {
+    console.error('Invalid data in localStorage');
+    localStorage.removeItem(localStorageKey);
+  }
 }
 
 form.addEventListener('input', evt => {
